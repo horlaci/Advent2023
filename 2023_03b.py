@@ -1,12 +1,16 @@
-def AppendToList(list, i, j):
+def AppendToList(myDict, i, j):
+    global Gear
+    templist = []
     for k in range(-1,2):
         for l in range(-1,2):
-            if [i+k,j+l] not in list:
-                list.append([i+k,j+l])
+            templist.append([i+k,j+l])
+    myDict[Gear] = templist
+    Gear = Gear + 1
 
+Gear = 0
 Engine = []
-MarkingSet = set()
-MarkedCoordinates = []
+MarkingSet = {"*"}
+MarkedCoordinates = dict()
 
 file = open("input_2023_03a.txt")
 
@@ -15,12 +19,6 @@ for line in file:
     Engine.append(line)
 
 file.close
-
-for EngineLine in Engine:                                                   # Find out what are the markings.
-    for i in range(0,len(EngineLine)):
-        if EngineLine[i] != "." and EngineLine[i].isnumeric() == False:     # Everything is a marking which is not a '.' or a number
-            MarkingSet.add(EngineLine[i])                                   # Add it to the marking set
-print(MarkingSet)
 
 for i in range(0,len(Engine)):
     for j in range(0,len(Engine[i])):
@@ -31,15 +29,27 @@ for i in range(0,len(Engine)):
 
 Number = 0
 Valid = False
+GearUpdate = 0
 Sum = 0
+GearRatios = dict()
 for i in range(0,len(Engine)):
     for j in range(0,len(Engine[i])):
         if Engine[i][j].isnumeric():
             Number = Number * 10 + int(Engine[i][j])
-            Valid = Valid or ([i,j] in MarkedCoordinates)
+            # Valid = Valid or ([i,j] in MarkedCoordinates)
+            for k in MarkedCoordinates:
+                if [i,j] in MarkedCoordinates[k]:
+                    GearUpdate = k
+                    Valid = True
         else:
             if Valid:
-                Sum = Sum + Number
+                if GearUpdate not in GearRatios:
+                    GearRatios[GearUpdate] = 0
+                if GearRatios[GearUpdate] == 0:
+                    GearRatios[GearUpdate] = Number
+                else:
+                    GearRatios[GearUpdate] = GearRatios[GearUpdate] * Number
+                    Sum = Sum + GearRatios[GearUpdate]
             Number = 0
             Valid = False
 
