@@ -10,15 +10,17 @@ for line in file:
     
     GamePossible = True
 
+    Cubes = {"red": 0, "green": 0, "blue": 0} # temporary dictionary for holding the color drawn
+
     for Drawing in Game[1].split("; "):     # go through all drawing by splitting Game[1] (aka drawings)
-        Cubes = {"red": 0, "green": 0, "blue": 0} # temporary dictionary for holding the color drawn
         for Color in Drawing.split(", "):       # Go through all colors
-            Cubes[Color.split()[1]] = int(Color.split()[0])  # Update number of colors drawn in dictionary
-        if (Cubes["red"] > 12) or (Cubes["green"] > 13) or (Cubes["blue"] > 14): # Game possible?
-            GamePossible = False
+            if (Cubes[Color.split()[1]] < int(Color.split()[0])):
+                Cubes[Color.split()[1]] = int(Color.split()[0])  # Update number of colors drawn in dictionary
+
+    Power = Cubes["red"]*Cubes["green"]*Cubes["blue"]
 
     if GamePossible:
-        Sum = Sum + Gamenumber
+        Sum = Sum + Power
 
 print("Összes: " + str(Sum))
 
